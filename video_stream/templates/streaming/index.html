@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'video_stream/style.css' %}"> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Video Streaming</title>
 </head>
 <body>
-    <h1>WebCam flow test</h1>
+    <h1 class="header">WebCam flow test</h1>
     <br>
     <!-- img taking src as url link, where another view func handling cam streaming  -->
-    <img src="{% url 'video_stream:cam_capture' %}">
+    <section class="video-boundary">
+        <div class="video-boundary__box">
+            <img src="{% url 'video_stream:cam_capture' %}">
+        </div>
+        <div class="video-boundary__box">
+            <img src="{% url 'video_stream:cam_capture' %}">
+        </div>
+    </section>
 </body>
 </html>
