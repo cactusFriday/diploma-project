@@ -1,4 +1,6 @@
-
+body {
+    background-color: rgb(99, 99, 99);
+}
 .video-boundary {
     width: 100%;
     margin-left: auto;
@@ -12,4 +14,22 @@
 .video-boundary__box {
     /* align-content: space-between; */
     width: auto;
+}
+
+.text-addition {
+    color:greenyellow;
+    text-align: center;
+    /* padding: 8px; */
+    text-indent: 50px;
+    letter-spacing: 3px;
+}
+
+a {
+    text-decoration: none;
+    color:rgb(129, 192, 34);
+    /* text-align: center; */
+  }
+
+.footer {
+    text-align: center;
 }

@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
 
 
 urlpatterns = [
-    # path('', )
+    path('', RedirectView.as_view(url='account/', permanent=True)),           # Redirect from base '/' url
+    path('account/', include('account.urls')),
     path('streaming/', include('video_stream.urls')),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

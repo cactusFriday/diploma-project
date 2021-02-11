@@ -35,4 +35,10 @@ def cam_capture(request):
     return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
 
 def index(request):
-    return render(request, 'streaming/index.html')
+    num_visits = request.session.get('num_visits', 1)
+    request.session['num_visits'] = num_visits + 1
+
+    context = {
+        'num_visits': num_visits,
+    }
+    return render(request, 'streaming/index.html', context=context)

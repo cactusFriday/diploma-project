@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'video_stream/style.css' %}">
+    {% block staticfiles %}
+    {% endblock %}
+    {% block title %}<title>Default page</title>{% endblock %}
+</head>
+<body>
+    {% block content %} {% endblock %}
+</body>
+</html>

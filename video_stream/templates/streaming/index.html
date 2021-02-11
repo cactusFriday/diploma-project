@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'video_stream/style.css' %}"> 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends "base_generic.html" %}
+
+    {% block staticfiles %}
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Video Streaming</title>
-</head>
-<body>
+    {% endblock %}
+    
+    {% block title %}<title>Video Streaming</title>{% endblock %}
+
+    {% block content %}
     <h1 class="header">WebCam flow test</h1>
     <br>
     <!-- img taking src as url link, where another view func handling cam streaming  -->
@@ -18,9 +16,21 @@
         <div class="video-boundary__box">
             <img src="{% url 'video_stream:cam_capture' %}">
         </div>
-        <div class="video-boundary__box">
+        <!-- <div class="video-boundary__box">
             <img src="{% url 'video_stream:cam_capture' %}">
-        </div>
+        </div> -->
     </section>
-</body>
-</html>
+    <section class="footer">
+        <p class = "text-addition">This page was visited {{num_visits}} times</p>
+        {% if user.is_authenticated %}
+        <p class="text-addition">You logged in as {{user.get_username}}</p>
+<!-- ?next={{request.path}} means that next URL contains current URL (streaming/) -->
+        <p><a href="{% url 'logout' %}?next={{request.path}}">Logout?</a></p>
+        {% else %}
+        <p class="text-addition">You are not authorised yet.</p>
+        <p class="text-addition">
+            <a class = 'links' href="{% url 'login'%}?next={{request.path}}">Login?</a>
+        </p>
+        {% endif %}
+    </section>
+    {% endblock %}
