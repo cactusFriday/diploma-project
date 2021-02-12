@@ -8,7 +8,7 @@ from django.views.decorators import gzip
 import cv2
 import numpy as np
 # import dlib
-import face_detection
+# import face_detection
 # from face_detection.retinaface.tensorrt_wrap import TensorRTRetinaFace
 # from face_detection.retinaface import RetinaNetResNet50
 from .cam_handle import VideoCamera

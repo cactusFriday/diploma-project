@@ -14,6 +14,10 @@ class Profile(models.Model):
         return 'Profile for user {}'.format(self.user.username)
 
 class WorkerBiometric(models.Model):
-    face_pic = models.ImageField()
-    date_stored = models.DateField()
+    name = models.CharField(max_length = 30, default = 'face_image')
+    # face_pic = models.ImageField(blank = True, null = True, upload_to = 'faces/%Y/%m/%d/')
+    face_pic = models.FileField(upload_to='faces/', blank = True, null = True)
+    date_stored = models.DateField('date saved')
     # worker_login = models.ForeignKey()
+    def __str__(self):
+        return self.name
