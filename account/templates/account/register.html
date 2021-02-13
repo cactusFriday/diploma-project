@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% block title %} register new user {% endblock %}
 {% block content %}
-<h1>Create an account</h1>
-<p>Please, sign up using the following form:</p>
-<form action = "." method="post">
-    {{ user_form.as_p }}
-    {% csrf_token %}
-    <p><input type="submit" value="Create my account"></p>
-</form>
+
+<div class="wrapper-form wrapper-register">
+    <div class="container-form container-register">
+        <h1>Create an account</h1>
+        <form action = "." class="form form-register" method="post">
+            {{ user_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Create my account"></p>
+        </form>
+    </div>
+</div>
+
 <p>{{ string_p }}<a href="/account/register_biometric/">{{ string_a }}</a></p>
 <!-- {{ string }} -->
 {% endblock %}

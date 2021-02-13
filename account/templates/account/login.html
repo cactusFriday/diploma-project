@@ -1,11 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Log-in{% endblock %}
 {% block content %}
-    <h1>Log-in</h1>
-    <p>Please, use the following form to log-in:</p>
-    <form action="." method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <p class='text-addition'><input type="submit" value="Log-in"></p>
-    </form>
+    <!-- <h1>Log-in</h1> -->
+    <div class="wrapper-form wrapper-login">
+        <div class="container-form container-login">
+            <h1>Welcome</h1>
+            <form class="form form-login" action="." method="POST">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <button type="submit" id="button-login">Login</button>
+            </form>
+            <div class="wrapper-link">
+                <p><a href="{% url "account:register" %}">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+    <!-- <p>Please, use the following form to log-in:</p> -->
+    <!-- <form action="." method="post"> -->
+        <!-- {% csrf_token %} -->
+        <!-- <p class='text-addition'><input type="submit" value="Log-in"></p> -->
+    <!-- </form> -->
 {% endblock %}
