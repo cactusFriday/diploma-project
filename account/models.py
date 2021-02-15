@@ -15,8 +15,8 @@ class Profile(models.Model):
         return 'Profile for user {}'.format(self.user.username)
 
 class WorkerBiometric(models.Model):
+    person = models.ForeignKey(Profile, on_delete=models.CASCADE, null = True)
     name = models.CharField(max_length = 30, default = 'face_image')
-    # person = models.ForeignKey(Profile, on_delete=models.CASCADE)
     face_pic = models.FileField(upload_to='faces/', blank = True, null = True)
     # face_embeding = models.IntegerField()
     date_stored = models.DateField('date saved')

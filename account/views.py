@@ -8,13 +8,43 @@ from .models import WorkerBiometric, Profile
 from .cam_handle import VideoCamera
 
 import cv2
+import time
 import sys
+import os
+# import pickle
+import pandas as pd
 import datetime as dt
 import asyncio
+import face_recognition as fr
 from asgiref.sync import sync_to_async
+from .config import ENCODINGS_BASE_DIR, ENCODING_FILE, IMGS_BASE_DIR
 
-# from sys.path.insert(0, '../video_stream/cam_handle.py') import video_stream.cam_handle
-# import video_stream.cam_handle as streaming
+# def face_authorise():
+#     cam = VideoCamera()
+#     while True:
+#         # get frames and recognise
+#         # if match => return True
+
+# @sync_to_async
+def handle_picture(face_pic, username):
+    face_pic = os.path.join(IMGS_BASE_DIR, face_pic)
+    print('IMAGE_PATH: ', face_pic)
+    print('USERNAME: ', username)
+    # time.sleep(2)
+    img = cv2.imread(face_pic)
+    boxes = fr.face_locations(img, model='hog')
+    encoding = fr.face_encodings(img, boxes)
+    df = pd.DataFrame({
+        'encodings': encoding,
+		'names': username
+    })
+    if os.path.isfile(ENCODING_FILE):
+        loaded_df = pd.read_pickle(ENCODING_FILE)
+        concat_df = pd.concat([loaded_df, df])
+        concat_df.to_pickle(ENCODING_FILE)
+    else:
+        df.to_pickle(ENCODING_FILE)
+
 @sync_to_async
 def save_face_image(request):
     cam = VideoCamera()
@@ -28,10 +58,17 @@ def save_face_image(request):
     # print('We are here')
     content = ContentFile(img)
     date = dt.datetime.now()
-    name = 'First_pic'
-    worker = WorkerBiometric(name = name, date_stored = date)
-    worker.face_pic.save('face.jpg', content)
+    worker = WorkerBiometric.objects.create(date_stored = date)
+    # worker.save(commit=False)
+    name = str(request.user.username) + str(worker.pk) + '.jpg'
+    worker.face_pic.save(name, content)
+    worker.person = user
+    worker.name = str(request.user.username) + str(worker.pk)
     worker.save()
+    # await asyncio.gather(*[handle_picture(worker.face_pic, name)])
+    handle_picture(name, request.user.first_name)
+    # profile = Profile.objects.get(user = user)
+    # print('USER FROM REQUEST: ', request.user, 'USER FROM PROFILE', profile)
 
 def user_login(request):
     print('login')
@@ -79,10 +116,10 @@ def register(request):
     return render(request, 'account/register.html', {'user_form': user_form})
 
 # async def get_register_done(request):
-    msg = 'bio saved'
-    context = {"msg": msg}
-    print('we are about to render HTML')
-    return render(request, 'account/register_done.html', {})
+    # msg = 'bio saved'
+    # context = {"msg": msg}
+    # print('we are about to render HTML')
+    # return render(request, 'account/register_done.html', {})
 
 async def register_biometric(request):
     if request.method == 'POST':
@@ -118,4 +155,3 @@ def edit(request):
 
 # TODO: deal with handling pics from DB and implement face_recognition NN
 # TODO: find out what make server stuck (probably async/await functions. Learn how to stop this processes)
-# TODO: make ManyToOne field which is for many pics of one worker
