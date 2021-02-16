@@ -20,6 +20,8 @@ class WorkerBiometric(models.Model):
     face_pic = models.FileField(upload_to='faces/', blank = True, null = True)
     # face_embeding = models.IntegerField()
     date_stored = models.DateField('date saved')
+    class Meta:
+        ordering = ['person']
     # face_pic = models.ImageField(blank = True, null = True, upload_to = 'faces/%Y/%m/%d/')
     # worker_login = models.ForeignKey()
     def __str__(self):
