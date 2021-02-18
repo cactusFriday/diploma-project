@@ -12,17 +12,16 @@ class Profile(models.Model):
     # face_embeding = models.IntegerField()
 
     def __str__(self):
-        return 'Profile for user {}'.format(self.user.username)
+        return f'Profile for user {self.user.username}'
 
 class WorkerBiometric(models.Model):
+    # link to Profile model
     person = models.ForeignKey(Profile, on_delete=models.CASCADE, null = True)
+    # name for exact node 
     name = models.CharField(max_length = 30, default = 'face_image')
     face_pic = models.FileField(upload_to='faces/', blank = True, null = True)
-    # face_embeding = models.IntegerField()
     date_stored = models.DateField('date saved')
     class Meta:
         ordering = ['person']
-    # face_pic = models.ImageField(blank = True, null = True, upload_to = 'faces/%Y/%m/%d/')
-    # worker_login = models.ForeignKey()
     def __str__(self):
         return self.name

@@ -11,12 +11,10 @@ import cv2
 import time
 import sys
 import os
-# import pickle
 import pandas as pd
 import datetime as dt
-import asyncio
+import threading
 import face_recognition as fr
-from asgiref.sync import sync_to_async
 from .config import ENCODINGS_BASE_DIR, ENCODING_FILE, IMGS_BASE_DIR
 
 # def face_authorise():
@@ -25,7 +23,6 @@ from .config import ENCODINGS_BASE_DIR, ENCODING_FILE, IMGS_BASE_DIR
 #         # get frames and recognise
 #         # if match => return True
 
-# @sync_to_async
 def handle_picture(face_pic, username):
     face_pic = os.path.join(IMGS_BASE_DIR, face_pic)
     print('IMAGE_PATH: ', face_pic)
@@ -45,27 +42,22 @@ def handle_picture(face_pic, username):
     else:
         df.to_pickle(ENCODING_FILE)
 
-@sync_to_async
+
 def save_face_image(request):
     cam = VideoCamera()
     img = cam.get_frame()
     cam.__del__()
     user = request.user.profile
-    # print('********************************************')
-    # print('USER PROFILE VAR', user)
-    # print('********************************************')
-    # cv2.imwrite('W:/backup/prog/django/imgs/image.jpg', img)
-    # print('We are here')
     content = ContentFile(img)
     date = dt.datetime.now()
     worker = WorkerBiometric.objects.create(date_stored = date)
     # worker.save(commit=False)
     name = str(request.user.username) + str(worker.pk) + '.jpg'
+    # save image(content) with name
     worker.face_pic.save(name, content)
     worker.person = user
     worker.name = str(request.user.username) + str(worker.pk)
     worker.save()
-    # await asyncio.gather(*[handle_picture(worker.face_pic, name)])
     handle_picture(name, request.user.first_name)
     # profile = Profile.objects.get(user = user)
     # print('USER FROM REQUEST: ', request.user, 'USER FROM PROFILE', profile)
@@ -120,20 +112,20 @@ def register(request):
     # context = {"msg": msg}
     # print('we are about to render HTML')
     # return render(request, 'account/register_done.html', {})
-
-async def register_biometric(request):
+@login_required
+def register_biometric(request):
+    context = {}
     if request.method == 'POST':
-        print('start saving')
-        # await save_face_image()
-        await asyncio.gather(*[save_face_image(request)])
-        msg = 'bio saved'
-        context = {"msg": msg}
-        print('we are about to render HTML')
+        # create a thread for handling function in parallel flow
+        t = threading.Thread(target=save_face_image, args=[request])
+        # t.setDaemon(True)
+        t.start()
+        print('**********************RENDERED**********************')
         return render(request, 'account/register_done.html', {})
     else:
-        context = {}
-    # print('soooooooo?')
+        context = {'msg': 'this is GET'}
     return render(request, 'account/registrate_biometric.html', context)
+
 
 @login_required
 def edit(request):
@@ -154,4 +146,3 @@ def edit(request):
         return render(request, 'account/edit.html', context)
 
 # TODO: deal with handling pics from DB and implement face_recognition NN
-# TODO: find out what make server stuck (probably async/await functions. Learn how to stop this processes)
