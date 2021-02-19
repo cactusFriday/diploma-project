@@ -9,12 +9,9 @@ def handle_encods():
     df = pd.read_pickle(ENCODINGS_FILE)
     res_names = []
     result = []
-    for encod in df.encodings:
+    for i, encod in enumerate(df.encodings):
         result.append(encod)
-    for name in df.names:
-        res_names.append(name)
-    # print(names)
-    # print(result)
+        res_names.append(df.names[i])
     return result, res_names
 
 class VideoCamera(object):

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, WorkerBiometric
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -30,3 +30,11 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('date_of_birth',)
+
+class WorkerBioEditForm(forms.ModelForm):
+    picture = forms.ImageField(required = False)
+    class Meta:
+        model = WorkerBiometric
+        fields = ('picture',)
+    # def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None, initial=None, error_class=ErrorList, label_suffix=None, empty_permitted=False, instance=None, use_required_attribute=None, renderer=None):
+    #     super(WorkerBioEditForm, self).__init__(data=data, files=files, auto_id=auto_id, prefix=prefix, initial=initial, error_class=error_class, label_suffix=label_suffix, empty_permitted=empty_permitted, instance=instance, use_required_attribute=use_required_attribute, renderer=renderer)

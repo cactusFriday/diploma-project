@@ -1,10 +1,7 @@
-import cv2, imutils
-# from imutils.video import FPS
+import cv2
 import datetime as dt
 import face_recognition
 import pickle
-
-
 
 class VideoCamera(object):
     # show = False
@@ -16,9 +13,9 @@ class VideoCamera(object):
     def get_frame(self):
         self.ret, self.frame = self.video.read()
         self.frame = cv2.flip(self.frame,1)
-        # self.frame = imutils.resize(self.frame, width=600)
         self.face_detect()
         ret, jpeg = cv2.imencode('.jpg', self.frame)
+        self.video.release()
         return jpeg.tobytes()
 
     def face_detect(self):
@@ -32,4 +29,3 @@ class VideoCamera(object):
             right *= 4
             bottom *= 4
             left *= 4
-            cv2.rectangle(self.frame, (left, top), (right, bottom), (0, 255, 0), 2)

@@ -3,9 +3,10 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, WorkerBioEditForm
 from .models import WorkerBiometric, Profile
 from .cam_handle import VideoCamera
+from .handle_pic import handle_picture, sync_encods
 
 import cv2
 import time
@@ -15,7 +16,7 @@ import pandas as pd
 import datetime as dt
 import threading
 import face_recognition as fr
-from .config import ENCODINGS_BASE_DIR, ENCODING_FILE, IMGS_BASE_DIR
+from .config import *
 
 # def face_authorise():
 #     cam = VideoCamera()
@@ -23,30 +24,15 @@ from .config import ENCODINGS_BASE_DIR, ENCODING_FILE, IMGS_BASE_DIR
 #         # get frames and recognise
 #         # if match => return True
 
-def handle_picture(face_pic, username):
-    face_pic = os.path.join(IMGS_BASE_DIR, face_pic)
-    print('IMAGE_PATH: ', face_pic)
-    print('USERNAME: ', username)
-    # time.sleep(2)
-    img = cv2.imread(face_pic)
-    boxes = fr.face_locations(img, model='hog')
-    encoding = fr.face_encodings(img, boxes)
-    df = pd.DataFrame({
-        'encodings': encoding,
-		'names': username
-    })
-    if os.path.isfile(ENCODING_FILE):
-        loaded_df = pd.read_pickle(ENCODING_FILE)
-        concat_df = pd.concat([loaded_df, df])
-        concat_df.to_pickle(ENCODING_FILE)
-    else:
-        df.to_pickle(ENCODING_FILE)
+# loads all images in image folder, get set(encoding, name) for each image and creates dataframe
+# pickle dataframe to encodings.pkl
 
 
 def save_face_image(request):
     cam = VideoCamera()
     img = cam.get_frame()
     cam.__del__()
+    sync_encods()
     user = request.user.profile
     content = ContentFile(img)
     date = dt.datetime.now()
@@ -59,6 +45,7 @@ def save_face_image(request):
     worker.name = str(request.user.username) + str(worker.pk)
     worker.save()
     handle_picture(name, request.user.first_name)
+    sync_encods()
     # profile = Profile.objects.get(user = user)
     # print('USER FROM REQUEST: ', request.user, 'USER FROM PROFILE', profile)
 
@@ -131,18 +118,20 @@ def register_biometric(request):
 def edit(request):
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
-        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
-        if user_form.is_valid() and profile_form.is_valid():
+        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES, )
+        worker_form = WorkerBioEditForm(instance=request.user.profile, data = request.POST)
+        if user_form.is_valid() and profile_form.is_valid() and worker_form.is_valid():
             user_form.save()
             profile_form.save()
+            worker_form.save()
         # TODO: !!!!!!!REDIRECT TO HOME PAGE FOR LOGGED IN USERS (CREATE THIS PAGE)!!!!!!!
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
+        worker_form = WorkerBioEditForm(instance=request.user.profile)
         context = {
             'user_form': user_form,
             'profile_form': profile_form,
+            'worker_form': worker_form,
         }
-        return render(request, 'account/edit.html', context)
-
-# TODO: deal with handling pics from DB and implement face_recognition NN
+    return render(request, 'account/edit.html', context)
