@@ -1,6 +1,8 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, WorkerBioEditForm
@@ -99,7 +101,18 @@ def register(request):
     # context = {"msg": msg}
     # print('we are about to render HTML')
     # return render(request, 'account/register_done.html', {})
-@login_required
+
+# decorator for modified authentification system
+def new_login_required(func):
+    def wrapper(request):
+        if request.user.get_username() == '':
+            return HttpResponseRedirect(reverse('account:login'))
+        else:
+            func(request)
+            #! WHAT THE FUCK
+    return wrapper
+
+@login_required(login_url='account:login')
 def register_biometric(request):
     context = {}
     if request.method == 'POST':
