@@ -12,6 +12,7 @@ urlpatterns = [
     path('register/', views.register, name = 'register'),
     path('register_biometric/', views.register_biometric, name = 'register_biometric'),
     path('edit/', views.edit, name='edit'),
+    path('logout/', views.UserLogout.as_view(), name = 'logout_page'),
     # path('login/')
     # path('cam_capture', views.cam_capture, name = 'cam_capture'),
 ]

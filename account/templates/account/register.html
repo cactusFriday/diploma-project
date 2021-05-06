@@ -1,16 +1,39 @@
 {% extends "base.html" %}
 {% block title %} register new user {% endblock %}
 {% block content %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Сохранение биометрии</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <img class = 'container' src="{% url 'video_stream:cam_capture' %}">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="wrapper-form wrapper-register">
-    <div class="container-form container-register">
-        <h1>Create an account</h1>
-        <form action = "." class="form form-register" method="post">
-            {{ user_form.as_p }}
+<div class="wrapper-form">
+    <div class="container form-register__container">
+        <h1 class = 'text-uppercase text-h1'>Регистрация</h1>
+        <form action = "." class="form" method="post">
+            {{ user_form }}
             {% csrf_token %}
-            <p><input type="submit" value="Create my account"></p>
+            <p><input type="submit" value="Создать аккаунт"></p>
         </form>
     </div>
+    <button type="button" class="btn btn-primary btn-abs-reg" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button>
 </div>
 
 <p>{{ string_p }}<a href="/account/register_biometric/">{{ string_a }}</a></p>

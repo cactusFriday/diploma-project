@@ -6,6 +6,9 @@ import pandas as pd
 ENCODINGS_FILE = 'W:\\backup\\prog\\django\\diploma_proj\\media\\encodings\\encodings.pkl'
 
 def handle_encods():
+    '''
+    Handling a pickle file and unzip its content to 2 arrays: encodings, name respectively
+    '''
     df = pd.read_pickle(ENCODINGS_FILE)
     res_names = []
     result = []
@@ -17,11 +20,18 @@ def handle_encods():
 class VideoCamera(object):
     # encodings, names = pd.read_pickle(ENCODINGS_FILE)
     def __init__(self):
+        '''
+        capture web-cam and handles existing encodings with names for each encoding
+        '''
         self.video = cv2.VideoCapture(0)
         self.encodings, self.names = handle_encods()
     def __del__(self):
         self.video.release()
     def get_frame(self):
+        '''
+        read one frame from webcam, call face_detect function, which recognise faces 
+        and creates bounding boxes with names or unknown above. Return jpeg frame in bytes format  
+        '''
         self.ret, self.frame = self.video.read()
         self.frame = cv2.flip(self.frame, 1)
         self.frame = imutils.resize(self.frame, width=600)
@@ -32,6 +42,9 @@ class VideoCamera(object):
         return jpeg.tobytes()
 
     def face_detect(self):
+        '''
+        recognise faces and creates bounding boxes with names or unknown above
+        '''
         small_frame = cv2.resize(self.frame, (0, 0), fx=0.25, fy=0.25)
         rgb_small_frame = small_frame[:, :, ::-1]
         boxes = face_recognition.face_locations(rgb_small_frame)

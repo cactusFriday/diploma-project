@@ -8,8 +8,6 @@ class Profile(models.Model):
         on_delete=models.CASCADE
         )
     date_of_birth = models.DateField(blank=True, null=True)
-    # photo = models.ImageField(upload_to='faces/%Y/%m/%d', blank=True)
-    # face_embeding = models.IntegerField()
 
     def __str__(self):
         return f'Profile for user {self.user.username}'

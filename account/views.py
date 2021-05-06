@@ -1,7 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
-from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import LogoutView
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
@@ -63,7 +64,7 @@ def user_login(request):
                 if user.is_active:
                     # login() activates user session
                     login(request, user)
-                    return HttpResponse('Authenticated successfully')
+                    return redirect('workspace:index')
                 else:
                     return HttpResponse('Disabled account')
             else:
@@ -102,15 +103,6 @@ def register(request):
     # print('we are about to render HTML')
     # return render(request, 'account/register_done.html', {})
 
-# decorator for modified authentification system
-def new_login_required(func):
-    def wrapper(request):
-        if request.user.get_username() == '':
-            return HttpResponseRedirect(reverse('account:login'))
-        else:
-            func(request)
-            #! WHAT THE FUCK
-    return wrapper
 
 @login_required(login_url='account:login')
 def register_biometric(request):
@@ -127,7 +119,7 @@ def register_biometric(request):
     return render(request, 'account/registrate_biometric.html', context)
 
 
-@login_required
+@login_required(login_url='account:login')
 def edit(request):
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
@@ -148,3 +140,6 @@ def edit(request):
             'worker_form': worker_form,
         }
     return render(request, 'account/edit.html', context)
+
+class UserLogout(LogoutView):
+    next_page = reverse_lazy('account:login')

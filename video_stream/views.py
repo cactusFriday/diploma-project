@@ -14,6 +14,9 @@ import numpy as np
 from .cam_handle import VideoCamera
 
 def gen(camera):
+    '''
+    Gets a camera class. Yield a frame in an infinite while loop
+    '''
     while True:
         frame = camera.get_frame()
         # img = np.ndarray(frame)

@@ -3,21 +3,19 @@
 {% block title %}Save your biometrics{% endblock %}
 
 {% block content %}
-<!-- <section class="video-boundary"> -->
-<div class="wrapper-form wrapper-register-bio">
-    <div class="video-boundary__box">
+<div class="wrapper-register-bio container">
+    <div class="video-boundary__box container">
         <img src="{% url 'video_stream:cam_capture' %}">
     </div>
-    <h1>Welcome {{ new_user.first_name }}!</h1>
+    <h1 class='text-uppercase'>Welcome {{ new_user.first_name }}!</h1>
 
-    <form method="post" class="form form-register-bio">
+    <form method="post" class="form-register-bio">
         {% csrf_token %}
         <p><input type="submit" value="Save biometric"></p>
     </form>
-</div>
-<!-- </section> -->
+    </div>
 
-<!-- INPUT BUTTON AND LINK TO VIEW FUNC THAT HANDLES FACE PICTURE -->
+
 
 
     <!-- <h1>Welcome {{ new_user.first_name }}!</h1> -->

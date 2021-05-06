@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'video_stream.apps.VideoStreamConfig',
     'account',
+    'workspace',
 ]
 
 MIDDLEWARE = [
