@@ -1,6 +1,6 @@
 {% extends "base-ws.html" %}
 {% block title %}Workspace{% endblock %}
-
+{% load static %}
 {% block content %}
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -20,26 +20,51 @@
         </div>
     </div>
 </div>
+
     <div class="container">
-        <h3 class='text-uppercase ws-header__text'>Streaming</h3>
-        <div class="video-boundary__box">
-            <img src="{% url 'video_stream:cam_capture' %}">
+            <form method = 'post', enctype = 'multipart/form-data'>
+            <div class = 'row'>
+            {% csrf_token %}
+                <div class = 'col-3'>
+                    <p class='text-start mb-2 text-lowercase'>Выбор объекта</p>
+                </div>
+                <div class = 'col-6'>
+                    <select class="form-select form-select-lg" aria-label="Default select example">
+                        <option selected>МИК1</option>
+                        <option value="1">МИК2</option>
+                        <option value="2">МИК3</option>
+                        <option value="3">Объект1</option>
+                    </select>
+                </div>
+            </div>
+            </form>
+        <div class = 'row'>
+            <div class = 'col'>
+                <div class="container">
+                    <img class = 'container' src="{% static 'images/stk1.jpg' %}">
+                </div>
+            </div>
+            <div class = 'col'>
+                <div class="container">
+                    <img class = 'container' src="{% static 'images/stk.jpg' %}">
+                </div>
+            </div>
         </div>
-    </div>
-    {% comment %} IF STATEMENT {% endcomment %}
-    <div class="container">
-        <h3 class='text-uppercase ws-header__text'>Streaming</h3>
-        {% comment %} MODAL BUTTON {% endcomment %}
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        <div class = 'row'>
+            <div class = 'col'>
+                <div class="container">
+                    <img class = 'container' src="{% static 'images/stk3.jpg' %}">
+                </div>
+            </div>
+            <div class = 'col'>
+                <div class="container">
+                    <img class = 'container' src="{% static 'images/stk2.jpg' %}">
+                </div>
+            </div>
+        </div>
+        {% comment %} <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             Launch demo modal
-        </button>
-    </div>
-    <div class="container">
-        <h3 class='text-uppercase ws-header__text'>Streaming</h3>
-    </div>
-    <div class="container">
-        <h3 class='text-uppercase ws-header__text'>Streaming</h3>
-        Workspace
+        </button> {% endcomment %}
     </div>
 
 

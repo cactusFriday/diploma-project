@@ -7,6 +7,8 @@ from . import views
 app_name = 'workspace'
 urlpatterns = [
     path('', views.index, name= 'index'),
+    path('documents/', views.documentView, name='documents'),
+    path('access/', views.accessView, name='access'),
     # path('', RedirectView.as_view(url='login/', permanent=True)),
     # path('login/', views.user_login, name = 'login'),
     # path('register/', views.register, name = 'register'),

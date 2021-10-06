@@ -1,18 +1,30 @@
 @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
 
+th {
+	border: 1px solid black;
+}
+tr {
+	border: 1px solid black;
+}
+
+.btn-primary {
+	background-color: #38e49c;
+	border-color: #27684d;
+	color: #000;
+}
 
 /* GENERAL TEXT STYLES */
 .text-uppercase {
 	color: #f1f1f1;
 	font-family: 'Exo', sans-serif;
-	font-size: 16px;
+	font-size: 18px;
 	font-weight: 400;
 	text-transform: uppercase;
 	text-decoration: none;
 }
 .text-lowercase {
-	color: #f1f1f1;
+	color: #f7f7f7;
 	font-family: 'Exo', sans-serif;
 	font-size: 16px;
 	font-weight: 300;
@@ -20,6 +32,9 @@
 	text-decoration: none;
 }
 
+.optional-text {
+	font-size: 20px;
+}
 
 * {
     box-sizing: border-box;
@@ -151,6 +166,10 @@
 	color:#000000;
 }
 .ws-header__text {
+	color: #ffffff!important;
+	font-family: 'Exo', sans-serif;
+	font-size: 20px;
+	font-weight: 600;
 	text-align: center;
 }
 .content-ws{
@@ -190,7 +209,6 @@
     -ms-flex-pack: justify;
     justify-content: space-between;
     padding: .5rem 1rem;
-	position: fixed;
 	top: 0;
     right: 0;
     left: 0;

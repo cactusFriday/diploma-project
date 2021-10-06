@@ -1,0 +1,59 @@
+from block import Block
+from flask import Flask, jsonify, request
+import sync
+import requests
+import os
+import json
+import sys
+
+from config import *
+
+node = Flask(__name__)
+
+sync.sync(save=True) #want to sync and save the overall "best" blockchain from peers
+
+@node.route('/blockchain.json', methods=['GET'])
+def blockchain():
+  '''
+    Shoots back the blockchain, which in our case, is a json list of hashes
+    with the block information which is:
+    index
+    timestamp
+    data
+    hash
+    prev_hash
+  '''
+  local_chain = sync.sync_local() #update if they've changed
+  # Convert our blocks into dictionaries
+  # so we can send them as json objects later
+  json_blocks = json.dumps(local_chain.block_list_dict())
+  # python_blocks = []
+  # for block in node_blocks:
+  #   python_blocks.append(block.__dict__())
+  # json_blocks = json.dumps(python_blocks)
+  return json_blocks
+
+@node.route('/mined', methods=['POST'])
+def mined():
+  possible_block_data = request.get_json()    #request from Flask
+  print(possible_block_data)
+  # validate possible block
+  possible_block = Block(possible_block_data)
+  if possible_block.is_valid():
+    # save to file to possible folder
+    index = possible_block.index
+    nonce = possible_block.nonce
+    filename = BROADCASTED_BLOCK_DIR + f'{index}_{nonce}.json'
+    with open(filename, 'w') as block_file:
+      json.dump(possible_block.to_dict(), block_file)
+    return jsonify(confirmed = True)
+  else:
+    return jsonify(confirmed = False)         #discard
+
+
+if __name__ == '__main__':
+  if len(sys.argv) >= 2:
+    port = sys.argv[1]
+  else:
+    port = 5000
+  node.run(host='127.0.0.1', port=port)

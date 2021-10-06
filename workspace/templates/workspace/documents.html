@@ -1,0 +1,105 @@
+{% extends "base-ws.html" %}
+{% block title %}Workspace{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3 class='text-uppercase ws-header__text mb-2 mt-2'>Работа с файлами</h3>
+        <div class='container'>
+            <div class = 'row'>
+                <div class = 'col-3'>
+                    <p class='text-start mb-2 text-lowercase optional-text'>Загрузка файла</p>
+                </div>
+                <div class = 'col-6'>
+                </div>
+            </div>
+            <form method = 'post', enctype = 'multipart/form-data'>
+            <div class = 'row'>
+            {% csrf_token %}
+                <div class = 'col-3'>
+                    <input type='file' name='doc'>
+                </div>
+                <div class = 'col-6'>
+                    <button type='submit' class="btn btn-primary">Загрузить файл</button>
+                </div>
+            </div>
+            </form>
+        </div>
+        <div class='container'>
+            <div class = 'row'>
+                <div class = 'col-3'>
+                    <p class='text-start mb-2 text-lowercase optional-text'>Доступные файлы</p>
+                </div>
+                <div class = 'col-6'>
+                </div>
+            </div>
+            <form method = 'post', enctype = 'multipart/form-data'>
+            <div class = 'row'>
+            {% csrf_token %}
+                <div class = 'col-3'>
+                    <p class='text-start mb-2 text-lowercase'>Выбор отдела</p>
+                </div>
+                <div class = 'col-6'>
+                    <select class="form-select form-select-lg" aria-label="Default select example">
+                        <option selected>Отдел баллистики</option>
+                        <option value="1">Отдел газодинамики</option>
+                        <option value="2">Отдел динамических испытаний</option>
+                        <option value="3">Отдел прочностного расчета</option>
+                    </select>
+                </div>
+            </div>
+            <div class = 'row'>
+                <div class = 'mt-4' style = 'width:100%;'><h3 class='text-uppercase' style = 'text-align: center;'>Файловая система</h3></div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Владелец</th>
+                            <th scope="col">Файл</th>
+                            <th scope="col">Дата последнего изменения</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc, owner, dt, trans, action in top_docs %}
+                        <tr>
+                            <th scope='row'> {{forloop.counter}} </th>
+                            <th> {{owner}} </th>
+                            <th><a href='{{doc}}'>{{doc}}</a></th>
+                            <th> {{dt}} </th>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3 class='text-uppercase ws-header__text'>Действия с файлами</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Сотрудник</th>
+                    <th scope="col">Действие</th>
+                    <th scope="col">Файл</th>
+                    <th scope='col'>Транзакция</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc, owner, dt, trans, action in docs %}
+                <tr>
+                    <th scope='row'> {{forloop.counter}} </th>
+                    <th> {{owner}} </th>
+                    <th> {{action}} </th>
+                    <th> <a href='{{doc}}'>{{doc}}</a> </th>
+                    <th> {{trans}} </th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+{% endblock %}

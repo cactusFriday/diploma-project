@@ -7,7 +7,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, WorkerBioEditForm
-from .models import WorkerBiometric, Profile
+from .models import WorkerBiometric, Profile, Transaction
 from .cam_handle import VideoCamera
 from .handle_pic import handle_picture, sync_encods
 
@@ -20,6 +20,7 @@ import datetime as dt
 import threading
 import face_recognition as fr
 from .config import *
+from .blockchain.block import Block
 
 # def face_authorise():
 #     cam = VideoCamera()
@@ -29,7 +30,45 @@ from .config import *
 
 # loads all images in image folder, get set(encoding, name) for each image and creates dataframe
 # pickle dataframe to encodings.pkl
+def create_trans(user):
+    temp_trans = Transaction()
+    temp_trans.user = user.profile
+    temp_trans.date = dt.datetime.now().strftime('%Y-%m-%d %H:%M')
+    temp_trans.data = f'Entry for user {user.username}'
+    # temp_trans.save(commit = False)
+    return temp_trans
 
+def check_trans(user):
+    '''
+    check if transaction from one unique user is more than 5
+    '''
+    temp_trans = Transaction.objects.all()
+    temp = []
+    result_s = '['
+    for t in temp_trans:
+        if t.user.user.username == user.username:
+            temp.append(t)
+            result_s += t.strformat()
+    if len(temp) >= 2:
+        print("Create Block")
+        d = {
+            'index': 1,
+            'timestamp': time.strftime('%Y-%m-%d %H:%M'),
+            'hash': '',
+            'prev_hash': '',
+            'nonce': 0,
+            'data': str(result_s + ']').strip(),
+        }
+        block = Block(d)
+        block.update_self_hash()
+        while not block.is_valid():
+            block.nonce += 1
+        block.self_save()
+
+        for tr in temp:
+            tr.delete()
+        # delete all gathered transactions
+        del block
 
 def save_face_image(request):
     cam = VideoCamera()
@@ -64,6 +103,10 @@ def user_login(request):
                 if user.is_active:
                     # login() activates user session
                     login(request, user)
+                    transaction = create_trans(user)
+                    transaction.save()
+                    check_trans(user)
+                    # !!! Create a transaction with (date, data, person)
                     return redirect('workspace:index')
                 else:
                     return HttpResponse('Disabled account')
@@ -121,6 +164,7 @@ def register_biometric(request):
 
 @login_required(login_url='account:login')
 def edit(request):
+    context = {}
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
         profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES, )
@@ -129,6 +173,9 @@ def edit(request):
             user_form.save()
             profile_form.save()
             worker_form.save()
+            print(user_form.data)
+            print(user_form)
+            render(request, 'workspace/index.html', context)
         # TODO: !!!!!!!REDIRECT TO HOME PAGE FOR LOGGED IN USERS (CREATE THIS PAGE)!!!!!!!
     else:
         user_form = UserEditForm(instance=request.user)

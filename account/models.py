@@ -23,3 +23,19 @@ class WorkerBiometric(models.Model):
         ordering = ['person']
     def __str__(self):
         return self.name
+
+class Transaction(models.Model):
+    date = models.DateTimeField(verbose_name='Время создания')
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, null = True)
+    data = models.CharField(max_length = 90, default = '')
+    saved = models.BooleanField(blank=False, null=False, editable=True, default=False)
+    def strformat(self):
+        '''
+        return all attributes in string format
+        '''
+        s = f'[user:{self.user.user.username}, date:{str(self.date)}, data:{str(self.data)}, saved:{str(self.saved)}]'
+        return s
+    class Meta:
+        ordering = ['-date']
+    def __str__(self):
+        return str(f'Transaction for user {self.user.user.username}')
